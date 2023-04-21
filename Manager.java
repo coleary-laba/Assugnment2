@@ -1,27 +1,15 @@
-public class Manager {
+public class Manager extends Worker {
+
     public String workId;
     private String name;
     private String task;
     public Worker[] employees;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-
-    }
-
-    public String getTask() {
-        return task;
-    }
-
-    public void setTask(String task) {
-
-    }
-
-    public Manager(String name, String workId, String task, Worker[] employees) {
-
+    public Manager(String newName, String newWorkId, String newTask, Worker[] newEmployees) {
+        name = newName;
+        workId = newWorkId;
+        task = newTask;
+        employees = newEmployees;
     }
 
 }

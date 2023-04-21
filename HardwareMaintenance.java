@@ -1,37 +1,45 @@
-public class HardwareMaintenance {
+public class HardwareMaintenance extends Task{
     private String hardware;
-    private String version;
 
-    public HardwareMaintenance(String hardware, String version) {
-
+    public HardwareMaintenance(String newHardware, String newVersion) {
+        hardware = newHardware;
+        version = newVersion;
     }
-
+    public String toString(){
+        return "hardware maintenance, status: "+solved;
+    }
     public void maintain() {
+        solved = true;
+    }
+
+    public void replace(String newHardware) {
+        hardware = newHardware;
+        solved = true;
 
     }
 
-    public void replace() {
+    public void optimize(String newVersion) {
+        version = newVersion;
+        solved = true;
 
-    }
-
-    public void optimize() {
-
-    }
-
-    public String getVersion() {
-        return version;
     }
 
     public String getHardware() {
         return hardware;
     }
 
-    public void setVersion(String version) {
 
+    public void setHardware(String newHardware) {
+        hardware = newHardware;
     }
 
-    public void setHardware(String hardware) {
-
+    @Override
+    void solve() {
+        if(!version.equals("newest")){
+            optimize("newest");
+        }
+        if(!hardware.equals("best")){
+            replace("best");
+        }
     }
-
 }

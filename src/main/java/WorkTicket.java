@@ -1,4 +1,4 @@
-public class WorkTicket {
+public class WorkTicket implements Item{
     public Task taskType;
     private String status;
     private int timeSpent;
@@ -31,5 +31,10 @@ public class WorkTicket {
 
     public void setTimeSpent(int newTimeSpent) {
         timeSpent = newTimeSpent;
+    }
+
+    @Override
+    public void printItem() {
+        ComputerRepair.logger.info("brr brr *Printing noises*");
     }
 }

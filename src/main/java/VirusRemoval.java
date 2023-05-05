@@ -1,4 +1,4 @@
-public class VirusRemoval extends Task {
+public class VirusRemoval extends Task implements Software{
     private String virusLocation;
     private boolean isRemovable;
 
@@ -19,6 +19,7 @@ public class VirusRemoval extends Task {
     }
     public void remove(){
         if(isRemovable){
+            fixIssues();
             solved = true;
         }
         else{
@@ -36,5 +37,10 @@ public class VirusRemoval extends Task {
     @Override
     void solve() {
         remove();
+    }
+
+    @Override
+    public void fixIssues() {
+        virusLocation = null;
     }
 }

@@ -1,4 +1,4 @@
-public class Customer {
+public class Customer implements Person{
 
     public String name;
     public String email;
@@ -10,6 +10,7 @@ public class Customer {
         email = newEmail;
         phone = newPhone;
         machine = newMachine;
+
     }
 
     public Machine getMachine() {
@@ -18,6 +19,9 @@ public class Customer {
 
     public void setMachine(Machine newMachine) {
         machine = newMachine;
+        if(machine != null){
+            machine.setOwner(this);
+        }
     }
 
     public void submitRequest() {

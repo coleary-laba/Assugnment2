@@ -1,4 +1,4 @@
-public class Recipt {
+public class Recipt implements Item{
     public Customer customer;
     public int amount;
 
@@ -11,7 +11,8 @@ public class Recipt {
 
     }
 
-    public void print() {
-
+    @Override
+    public void printItem() {
+        ComputerRepair.logger.info("chkchhhk *Printing Noises*");
     }
 }

@@ -1,4 +1,4 @@
-public class Update extends Task{
+public class Update extends Task implements  Software{
     private int updateTime;
     private boolean requiresShutdown;
 
@@ -9,13 +9,13 @@ public class Update extends Task{
     }
 
     public void updateMachine() {
-        version = "newestVersion";
+        fixIssues();
         updateTime = 0;
         solved = true;
     }
 
     public void updateRestart() {
-        version = "newestVersion";
+        fixIssues();
         updateTime = 0;
         solved = true;
     }
@@ -41,12 +41,20 @@ public class Update extends Task{
     }
 
     @Override
-    void solve() {
+    String solve() {
         if(requiresShutdown){
             updateRestart();
+            return "solved";
         }
         else{
             updateMachine();
+            return "solved";
         }
+    }
+
+    @Override
+    public void fixIssues() {
+        version = "newest";
+
     }
 }

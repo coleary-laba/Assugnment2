@@ -1,4 +1,4 @@
-public class HardwareMaintenance extends Task{
+public class HardwareMaintenance extends Task implements Hardware{
     private String hardware;
 
     public HardwareMaintenance(String newHardware, String newVersion) {
@@ -13,7 +13,7 @@ public class HardwareMaintenance extends Task{
     }
 
     public void replace(String newHardware) {
-        hardware = newHardware;
+        changeHardware(newHardware);
         solved = true;
 
     }
@@ -29,17 +29,23 @@ public class HardwareMaintenance extends Task{
     }
 
 
-    public void setHardware(String newHardware) {
-        hardware = newHardware;
+    @Override
+    String solve() {
+        if(!version.equals("newest")){
+            optimize("newest");
+            return "solved";
+        }
+        else if(!hardware.equals("best")){
+            replace("best");
+            return "solved";
+        }
+        else {
+            return "unsolved";
+        }
     }
 
     @Override
-    void solve() {
-        if(!version.equals("newest")){
-            optimize("newest");
-        }
-        if(!hardware.equals("best")){
-            replace("best");
-        }
+    public void changeHardware(String newHardware) {
+        hardware = newHardware;
     }
 }

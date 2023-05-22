@@ -17,6 +17,6 @@ public abstract class Task {
         public void setSolved(boolean newSolved) {
             solved = newSolved;
         }
-        abstract void solve();
+        abstract String solve();
 
 }

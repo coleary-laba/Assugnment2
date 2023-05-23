@@ -4,15 +4,13 @@ import items.Machine;
 
 import java.util.ArrayList;
 
-public class CustomerService implements Person {
-
+public class CustomerService implements IPerson {
 
     private String workId;
     private final String name;
     private final String task;
     private final ArrayList<Customer> customers;
     private Machine machine;
-
 
     public CustomerService(String newName, String newWorkId, String newTask, ArrayList<Customer> newCustomers) {
         name = newName;
@@ -36,6 +34,7 @@ public class CustomerService implements Person {
     public void setWorkId(String workId) {
         this.workId = workId;
     }
+
     public ArrayList<Customer> getCustomers() {
         return customers;
     }

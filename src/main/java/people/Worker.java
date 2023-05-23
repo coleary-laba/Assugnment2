@@ -3,12 +3,10 @@ package people;
 import issues.Task;
 import items.Machine;
 
-public class Worker implements Person {
+public class Worker implements IPerson {
+
     private String workId;
     protected String name;
-
-
-
     private Task task;
     protected Machine machine;
 
@@ -36,6 +34,7 @@ public class Worker implements Person {
     public void setWorkId(String workId) {
         this.workId = workId;
     }
+
     public Task getTask() {
         return task;
     }

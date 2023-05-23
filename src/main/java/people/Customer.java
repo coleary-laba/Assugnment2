@@ -6,22 +6,21 @@ import main.Main;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Customer implements Person {
+public class Customer implements IPerson {
+
     private String name;
     private String email;
     private String phone;
     private Machine machine;
     private int funds;
     private int bill;
+    public Reaction reaction;
 
     public Customer() {
 
     }
 
-    public Reaction reaction;
-
     public Customer(String newName, String newEmail, String newPhone, Machine newMachine) {
-
         name = newName;
         email = newEmail;
         phone = newPhone;
@@ -29,7 +28,6 @@ public class Customer implements Person {
         funds = 180;
         bill = 0;
         this.reaction = Reaction.NOREACTION;
-
     }
 
     public void bill(int newBill) {
@@ -80,6 +78,7 @@ public class Customer implements Person {
             machine.setOwner(this);
         }
     }
+
     public String getName() {
         return name;
     }

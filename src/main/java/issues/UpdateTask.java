@@ -3,10 +3,11 @@ package issues;
 import interfaces.ISoftware;
 
 public class UpdateTask extends Task implements ISoftware {
+
     private int updateTime;
     private boolean requiresShutdown;
 
-    public UpdateTask(String newVersion, int newUpdateTime, boolean newRequiresShutdown) {
+    public UpdateTask(Version newVersion, int newUpdateTime, boolean newRequiresShutdown) {
         version = newVersion;
         updateTime = newUpdateTime;
         requiresShutdown = newRequiresShutdown;
@@ -24,6 +25,7 @@ public class UpdateTask extends Task implements ISoftware {
         solved = true;
     }
 
+    @Override
     public String toString() {
         return "update, status: " + solved;
     }
@@ -57,7 +59,6 @@ public class UpdateTask extends Task implements ISoftware {
 
     @Override
     public void fixIssues() {
-        version = "newest";
-
+        version = Version.NEWEST;
     }
 }

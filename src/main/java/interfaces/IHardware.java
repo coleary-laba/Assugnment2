@@ -1,5 +1,8 @@
 package interfaces;
 
+import issues.Hardware;
+
 public interface IHardware {
-    void changeHardware(String newHardware);
+
+    void changeHardware(Hardware newHardware);
 }

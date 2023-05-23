@@ -3,6 +3,7 @@ package main;
 import items.WorkTicket;
 
 public class Node {
+
     WorkTicket t;
     Node next;
 
@@ -10,13 +11,16 @@ public class Node {
         t = n;
         next = null;
     }
-    public WorkTicket getData(){
+
+    public WorkTicket getData() {
         return t;
     }
-    public Node getNext(){
+
+    public Node getNext() {
         return next;
     }
-    public void setNext(Node newT){
-        next= newT;
+
+    public void setNext(Node newT) {
+        next = newT;
     }
 }

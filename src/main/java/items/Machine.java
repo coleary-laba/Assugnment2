@@ -2,16 +2,16 @@ package items;
 
 import issues.Task;
 import people.Customer;
-import people.Person;
+import people.IPerson;
 
 public class Machine {
 
     private Task problem;
-    private final Person owner;
+    private IPerson owner;
     private String operatingSystem;
     private String deviceType;
 
-    public Machine(Task newProblem, Person newOwner, String newOperatingSystem, String newDeviceType) {
+    public Machine(Task newProblem, IPerson newOwner, String newOperatingSystem, String newDeviceType) {
         problem = newProblem;
         owner = newOwner;
         operatingSystem = newOperatingSystem;
@@ -30,8 +30,8 @@ public class Machine {
         return (Customer) owner;
     }
 
-    public void setOwner(Person owner) {
-
+    public void setOwner(IPerson owner) {
+        this.owner = owner;
     }
 
     public String getOperatingSystem() {

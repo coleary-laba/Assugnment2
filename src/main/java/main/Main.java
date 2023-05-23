@@ -1,44 +1,41 @@
 package main;
 
+import interfaces.IBillTotal;
 import interfaces.ICounterOfThings;
 import interfaces.IGenerator;
-import issues.HardwareMaintenanceTask;
-import interfaces.IBillTotal;
-import issues.InstallSoftwareTask;
-import issues.Task;
-import issues.UpdateTask;
-import issues.VirusRemovalTask;
+import issues.*;
 import items.Machine;
 import items.Recipt;
+import items.Status;
 import items.WorkTicket;
-import people.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.io.FileUtils;
+import people.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 
 public class Main {
+
     public static ArrayList<Worker> workers;
     public static ArrayList<Customer> customers;
     public static Logger logger;
-
     public static ComputerRepairService computerRepairService;
     public static final int numPeople = 10;
     public static ArrayList<Recipt> recipts;
     public static int billpaied = 0;
     public static int totalpaid = 0;
-
 
     public static void main(String[] args) {
 
@@ -142,10 +139,10 @@ public class Main {
             switch (prob) {
                 case 1:
                     int timing = randNum.findNum(1, 60);
-                    newTask = new UpdateTask("2.0", timing, findBool.findTrueFalse());
+                    newTask = new UpdateTask(Version.OLDER, timing, findBool.findTrueFalse());
                     break;
                 case 2:
-                    newTask = new HardwareMaintenanceTask("old", "newest");
+                    newTask = new HardwareMaintenanceTask(Hardware.CPU, Version.OLDER);
                     break;
                 case 3:
                     newTask = new VirusRemovalTask("CPU", findBool.findTrueFalse());
@@ -187,7 +184,7 @@ public class Main {
         ArrayList<WorkTicket> finalWorkTickets = workTickets;
         int billTotal = IBillTotalFinder.generateTotal(computerRepairService.getCustomerService().getCustomers());
         workTickets.forEach(n -> {
-            if (n.getStatus().equals(WorkTicket.Status.SOLVED)) {
+            if (n.getStatus().equals(Status.SOLVED)) {
                 logger.info("Issues.Task is solved, closing ticket");
                 n = null;
                 finalWorkTickets.remove(n);
@@ -233,7 +230,7 @@ public class Main {
         for (int i = 0; i < customers.size(); i++) {
             Task currentTask = customers.get(i).getMachine().getProblem();
             newWorkticket = new WorkTicket(currentTask, 0);
-            newWorkticket.setStatus(WorkTicket.Status.UNSOLVED);
+            newWorkticket.setStatus(Status.UNSOLVED);
             returnList.add(newWorkticket);
         }
         return returnList;
@@ -272,10 +269,9 @@ public class Main {
         for (int i = 0; i < Manager.getEmployees().size(); i++) {
             Customer tempCust = service.getCustomerService().getCustomers().get(i);
             tempBool = Manager.getEmployees().get(i).getTask().solve();
-            if(tempBool){
+            if (tempBool) {
                 status = "solved";
-            }
-            else{
+            } else {
                 status = "unsolved";
             }
             String returnString = "Issues.Task " + i + " completed";
@@ -314,7 +310,6 @@ public class Main {
             }
             service.getCustomerService().getCustomers().set(i, tempCust);
             logger.info(returnString);
-
         }
     }
 

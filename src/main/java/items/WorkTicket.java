@@ -5,13 +5,7 @@ import issues.Task;
 
 public class WorkTicket implements IItem {
 
-
     private Task task;
-
-    public enum Status {
-        SOLVED, UNSOLVED;
-    }
-
     private int timeSpent;
     private Status stat;
 
@@ -23,10 +17,6 @@ public class WorkTicket implements IItem {
 
     public void resolve() {
         stat = Status.SOLVED;
-    }
-
-    public void assign() {
-
     }
 
     public Status getStatus() {

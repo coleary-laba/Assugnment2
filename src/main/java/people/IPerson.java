@@ -2,6 +2,6 @@ package people;
 
 import items.Machine;
 
-public interface Person {
+public interface IPerson {
     void setMachine(Machine newMachine);
 }

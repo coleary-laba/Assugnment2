@@ -4,11 +4,11 @@ import items.Machine;
 
 import java.util.ArrayList;
 
-public class Manager extends Worker implements Person {
+public class Manager extends Worker implements IPerson {
+
     private String workId;
     private String manTask;
     private static ArrayList<Worker> employees;
-
     private Machine machine;
 
     public Manager(String newName, String newWorkId, String newTask, ArrayList<Worker> newEmployees) {
@@ -41,6 +41,7 @@ public class Manager extends Worker implements Person {
     public static void setEmployees(ArrayList<Worker> employees) {
         Manager.employees = employees;
     }
+
     public void setMachine(Machine newMachine) {
         machine = newMachine;
         if (machine != null) {

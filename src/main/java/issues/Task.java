@@ -1,14 +1,14 @@
 package issues;
 
 public abstract class Task {
-    protected String version;
+    protected Version version;
     protected boolean solved;
 
-    public String gerVersion() {
+    public Version gerVersion() {
         return version;
     }
 
-    public void setVersion(String newVersion) {
+    public void setVersion(Version newVersion) {
         version = newVersion;
     }
 

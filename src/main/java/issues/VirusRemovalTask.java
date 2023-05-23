@@ -3,6 +3,7 @@ package issues;
 import interfaces.ISoftware;
 
 public class VirusRemovalTask extends Task implements ISoftware {
+
     private String virusLocation;
     private boolean isRemovable;
 

@@ -3,6 +3,7 @@ package issues;
 import interfaces.ISoftware;
 
 public class InstallSoftwareTask extends Task implements ISoftware {
+
     private String softwareDrive;
     private boolean spaceAvailable;
 
@@ -35,7 +36,6 @@ public class InstallSoftwareTask extends Task implements ISoftware {
     public boolean solve() {
         fixIssues();
         return solved;
-
     }
 
     //If there is space on the disk then the software should be installed just fine

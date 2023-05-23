@@ -1,3 +1,9 @@
+package Items;
+
+import Issues.Task;
+import People.Customer;
+import People.Person;
+
 public class Machine {
 
     private Task problem;

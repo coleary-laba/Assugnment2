@@ -1,4 +1,8 @@
-public class InstallSoftware extends Task implements Software{
+package Issues;
+
+import Interfaces.ISoftware;
+
+public class InstallSoftware extends Task implements ISoftware {
     private String softwareDrive;
     private boolean spaceAvailable;
 
@@ -7,9 +11,10 @@ public class InstallSoftware extends Task implements Software{
         spaceAvailable = newSpaceAvailable;
     }
 
-    public String toString(){
-        return "Software installation, status: "+solved;
+    public String toString() {
+        return "Software installation, status: " + solved;
     }
+
     public String getSoftwareLocation() {
         return softwareDrive;
     }
@@ -17,6 +22,7 @@ public class InstallSoftware extends Task implements Software{
     public void setSoftwareDrive(String newSoftwareDrive) {
         softwareDrive = newSoftwareDrive;
     }
+
     public boolean getSpaceAvailable() {
         return spaceAvailable;
     }
@@ -26,7 +32,7 @@ public class InstallSoftware extends Task implements Software{
     }
 
     @Override
-    String solve() {
+    public String solve() {
         fixIssues();
         return "solved";
     }

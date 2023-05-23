@@ -1,4 +1,9 @@
-public class Worker  implements Person{
+package People;
+
+import Issues.Task;
+import Items.Machine;
+
+public class Worker implements Person {
     public String workId;
     protected String name;
     public Task task;

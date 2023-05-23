@@ -1,13 +1,19 @@
-public class HardwareMaintenance extends Task implements Hardware{
+package Interfaces;
+
+import Issues.Task;
+
+public class IHardwareMaintenance extends Task implements IHardware {
     private String hardware;
 
-    public HardwareMaintenance(String newHardware, String newVersion) {
+    public IHardwareMaintenance(String newHardware, String newVersion) {
         hardware = newHardware;
         version = newVersion;
     }
-    public String toString(){
-        return "hardware maintenance, status: "+solved;
+
+    public String toString() {
+        return "hardware maintenance, status: " + solved;
     }
+
     public void maintain() {
         solved = true;
     }
@@ -30,16 +36,14 @@ public class HardwareMaintenance extends Task implements Hardware{
 
 
     @Override
-    String solve() {
-        if(!version.equals("newest")){
+    public String solve() {
+        if (!version.equals("newest")) {
             optimize("newest");
             return "solved";
-        }
-        else if(!hardware.equals("best")){
+        } else if (!hardware.equals("best")) {
             replace("best");
             return "solved";
-        }
-        else {
+        } else {
             return "unsolved";
         }
     }

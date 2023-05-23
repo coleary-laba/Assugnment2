@@ -1,20 +1,22 @@
-import java.io.*;
-import java.util.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package Main;
 
-public final class ComputerRepair {
+import People.CustomerService;
+import People.Manager;
+
+public final class ComputerRepairService {
     static private Manager manager;
     static private CustomerService customerService;
 
-    public ComputerRepair(Manager newManager, CustomerService newCustomerService){
+    public ComputerRepairService(Manager newManager, CustomerService newCustomerService) {
         manager = newManager;
         customerService = newCustomerService;
     }
-    public CustomerService getCustomerService(){
+
+    public CustomerService getCustomerService() {
         return customerService;
     }
-    public Manager getManager(){
+
+    public Manager getManager() {
         return manager;
     }
 }

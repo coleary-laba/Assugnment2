@@ -1,4 +1,9 @@
-public class Recipt implements Item{
+package Items;
+
+import Interfaces.IItem;
+import People.Customer;
+
+public class Recipt implements IItem {
     public Customer customer;
     public int amount;
 

@@ -1,4 +1,8 @@
-public class Update extends Task implements  Software{
+package Issues;
+
+import Interfaces.ISoftware;
+
+public class Update extends Task implements ISoftware {
     private int updateTime;
     private boolean requiresShutdown;
 
@@ -19,8 +23,9 @@ public class Update extends Task implements  Software{
         updateTime = 0;
         solved = true;
     }
-    public String toString(){
-        return "update, status: "+solved;
+
+    public String toString() {
+        return "update, status: " + solved;
     }
 
     public int getUpdateTime() {
@@ -41,12 +46,11 @@ public class Update extends Task implements  Software{
     }
 
     @Override
-    String solve() {
-        if(requiresShutdown){
+    public String solve() {
+        if (requiresShutdown) {
             updateRestart();
             return "solved";
-        }
-        else{
+        } else {
             updateMachine();
             return "solved";
         }

@@ -1,10 +1,15 @@
-public class WorkTicket implements Item{
-    public Task taskType;
+package Items;
+
+import Interfaces.IItem;
+import Issues.Task;
+
+public class WorkTicket implements IItem {
+    public Task task;
     private String status;
     private int timeSpent;
 
     public WorkTicket(Task newTaskType, String newStatus, int newTimeSpent) {
-        taskType = newTaskType;
+        task = newTaskType;
         status = newStatus;
         timeSpent = newTimeSpent;
     }

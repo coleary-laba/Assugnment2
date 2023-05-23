@@ -1,9 +1,13 @@
+package People;
+
+import Items.Machine;
+
 import java.util.ArrayList;
 
-public class Manager extends Worker implements Person{
+public class Manager extends Worker implements Person {
 
     public String workId;
-    public  String manTask;
+    public String manTask;
     public static ArrayList<Worker> employees;
 
     private Machine machine;
@@ -14,9 +18,10 @@ public class Manager extends Worker implements Person{
         manTask = newTask;
         employees = newEmployees;
     }
+
     public void setMachine(Machine newMachine) {
         machine = newMachine;
-        if(machine != null){
+        if (machine != null) {
             machine.setOwner(this);
         }
     }

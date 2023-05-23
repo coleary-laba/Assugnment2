@@ -1,6 +1,6 @@
-package People;
+package people;
 
-import Items.Machine;
+import items.Machine;
 
 public interface Person {
     void setMachine(Machine newMachine);

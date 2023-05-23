@@ -1,6 +1,6 @@
-package Main;
+package main;
 
-import Items.WorkTicket;
+import items.WorkTicket;
 
 public class Node {
     WorkTicket t;

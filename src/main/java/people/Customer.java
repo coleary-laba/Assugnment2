@@ -1,17 +1,15 @@
-package People;
+package people;
 
-import Items.Machine;
-import Main.Main;
+import items.Machine;
+import main.Main;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Customer implements Person {
-
-    public String name;
-
-    public String email;
-    public String phone;
+    private String name;
+    private String email;
+    private String phone;
     private Machine machine;
     private int funds;
     private int bill;
@@ -56,7 +54,7 @@ public class Customer implements Person {
                 Main.totalpaid += paid;
                 Main.logger.info(name + " has paid their bill in full");
                 if (funds > 0) {
-                    double tipAmount = reaction.tip * bill;
+                    double tipAmount = reaction.getTip() * bill;
                     if (funds > tipAmount) {
                         paid += tipAmount;
                         funds -= tipAmount;
@@ -81,6 +79,29 @@ public class Customer implements Person {
         if (machine != null) {
             machine.setOwner(this);
         }
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void printer() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

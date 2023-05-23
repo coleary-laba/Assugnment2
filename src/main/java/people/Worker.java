@@ -1,12 +1,15 @@
-package People;
+package people;
 
-import Issues.Task;
-import Items.Machine;
+import issues.Task;
+import items.Machine;
 
 public class Worker implements Person {
-    public String workId;
+    private String workId;
     protected String name;
-    public Task task;
+
+
+
+    private Task task;
     protected Machine machine;
 
     public Worker(String newName, String newWorkId, Task newTask) {
@@ -26,6 +29,13 @@ public class Worker implements Person {
         name = newName;
     }
 
+    public String getWorkId() {
+        return workId;
+    }
+
+    public void setWorkId(String workId) {
+        this.workId = workId;
+    }
     public Task getTask() {
         return task;
     }

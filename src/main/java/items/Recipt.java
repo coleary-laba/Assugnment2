@@ -1,11 +1,13 @@
-package Items;
+package items;
 
-import Interfaces.IItem;
-import People.Customer;
+import interfaces.IItem;
+import people.Customer;
 
 public class Recipt implements IItem {
-    public Customer customer;
-    public int amount;
+
+
+    private Customer customer;
+    private int amount;
 
     public Recipt(Customer newCustomer, int newAmount) {
         customer = newCustomer;
@@ -16,6 +18,13 @@ public class Recipt implements IItem {
 
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
     @Override
     public void printItem() {
         System.out.println("chkchhhk *Printing Noises*");

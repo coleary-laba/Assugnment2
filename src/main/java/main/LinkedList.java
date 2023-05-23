@@ -1,6 +1,6 @@
-package Main;
+package main;
 
-import Items.WorkTicket;
+import items.WorkTicket;
 
 public class LinkedList {
 
@@ -71,10 +71,10 @@ public class LinkedList {
         if(head != null){
             Node curNode = head;
             while (curNode.getNext() != null){
-                Main.logger.info(curNode.getData().task.toString());
+                Main.logger.info(curNode.getData().getTask().toString());
                 curNode = curNode.getNext();
             }
-            Main.logger.info(curNode.getData().task.toString());
+            Main.logger.info(curNode.getData().getTask().toString());
         }
     }
 }

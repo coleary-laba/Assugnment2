@@ -1,11 +1,11 @@
-package Interfaces;
+package issues;
 
-import Issues.Task;
+import interfaces.IHardware;
 
-public class IHardwareMaintenance extends Task implements IHardware {
+public class HardwareMaintenanceTask extends Task implements IHardware {
     private String hardware;
 
-    public IHardwareMaintenance(String newHardware, String newVersion) {
+    public HardwareMaintenanceTask(String newHardware, String newVersion) {
         hardware = newHardware;
         version = newVersion;
     }
@@ -36,16 +36,13 @@ public class IHardwareMaintenance extends Task implements IHardware {
 
 
     @Override
-    public String solve() {
+    public boolean solve() {
         if (!version.equals("newest")) {
             optimize("newest");
-            return "solved";
         } else if (!hardware.equals("best")) {
             replace("best");
-            return "solved";
-        } else {
-            return "unsolved";
         }
+        return solved;
     }
 
     @Override

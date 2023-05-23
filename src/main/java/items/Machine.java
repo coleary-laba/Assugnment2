@@ -1,8 +1,8 @@
-package Items;
+package items;
 
-import Issues.Task;
-import People.Customer;
-import People.Person;
+import issues.Task;
+import people.Customer;
+import people.Person;
 
 public class Machine {
 

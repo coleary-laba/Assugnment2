@@ -1,4 +1,4 @@
-package Issues;
+package issues;
 
 public abstract class Task {
     protected String version;
@@ -24,6 +24,6 @@ public abstract class Task {
         return null;
     }
 
-    public abstract String solve();
+    public abstract boolean solve();
 
 }

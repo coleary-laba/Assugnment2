@@ -1,7 +1,7 @@
-package Main;
+package main;
 
-import People.CustomerService;
-import People.Manager;
+import people.CustomerService;
+import people.Manager;
 
 public final class ComputerRepairService {
     static private Manager manager;

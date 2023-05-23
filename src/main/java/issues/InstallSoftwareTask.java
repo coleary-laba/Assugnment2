@@ -1,12 +1,12 @@
-package Issues;
+package issues;
 
-import Interfaces.ISoftware;
+import interfaces.ISoftware;
 
-public class InstallSoftware extends Task implements ISoftware {
+public class InstallSoftwareTask extends Task implements ISoftware {
     private String softwareDrive;
     private boolean spaceAvailable;
 
-    public InstallSoftware(String newLocation, boolean newSpaceAvailable) {
+    public InstallSoftwareTask(String newLocation, boolean newSpaceAvailable) {
         softwareDrive = newLocation;
         spaceAvailable = newSpaceAvailable;
     }
@@ -32,11 +32,14 @@ public class InstallSoftware extends Task implements ISoftware {
     }
 
     @Override
-    public String solve() {
+    public boolean solve() {
         fixIssues();
-        return "solved";
+        return solved;
+
     }
 
+    //If there is space on the disk then the software should be installed just fine
+    //otherwise, wont successfully install, to add some variability to outcomes
     @Override
     public void fixIssues() {
         solved = spaceAvailable;

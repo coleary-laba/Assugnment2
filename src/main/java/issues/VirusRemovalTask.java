@@ -1,12 +1,12 @@
-package Issues;
+package issues;
 
-import Interfaces.ISoftware;
+import interfaces.ISoftware;
 
-public class VirusRemoval extends Task implements ISoftware {
+public class VirusRemovalTask extends Task implements ISoftware {
     private String virusLocation;
     private boolean isRemovable;
 
-    public VirusRemoval(String newVirusLocation, boolean newIsRemovable) {
+    public VirusRemovalTask(String newVirusLocation, boolean newIsRemovable) {
         virusLocation = newVirusLocation;
         isRemovable = newIsRemovable;
     }
@@ -41,9 +41,9 @@ public class VirusRemoval extends Task implements ISoftware {
     }
 
     @Override
-    public String solve() {
+    public boolean solve() {
         remove();
-        return "solved";
+        return solved;
     }
 
     @Override

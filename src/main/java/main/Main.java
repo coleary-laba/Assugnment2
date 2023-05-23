@@ -1,17 +1,17 @@
-package Main;
+package main;
 
-import Interfaces.ICounterOfThings;
-import Interfaces.IGenerator;
-import Interfaces.IHardwareMaintenance;
-import Interfaces.IbillTotal;
-import Issues.InstallSoftware;
-import Issues.Task;
-import Issues.Update;
-import Issues.VirusRemoval;
-import Items.Machine;
-import Items.Recipt;
-import Items.WorkTicket;
-import People.*;
+import interfaces.ICounterOfThings;
+import interfaces.IGenerator;
+import issues.HardwareMaintenanceTask;
+import interfaces.IBillTotal;
+import issues.InstallSoftwareTask;
+import issues.Task;
+import issues.UpdateTask;
+import issues.VirusRemovalTask;
+import items.Machine;
+import items.Recipt;
+import items.WorkTicket;
+import people.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +45,7 @@ public class Main {
         ICounterOfThings<String> NameSearcher;
         IGenerator<Worker> arrayGenWorker;
         IGenerator<Customer> arrayGenCustomer;
-        IbillTotal<Customer> ibillTotalFinder;
+        IBillTotal<Customer> IBillTotalFinder;
         NameSearcher = (single, collection) -> {
             int count = 0;
             for (int i = 0; i < collection.length; i++) {
@@ -65,11 +65,11 @@ public class Main {
         arrayGenCustomer = (collection) -> {
             String[] retArray = new String[collection.size()];
             for (int i = 0; i < collection.size(); i++) {
-                retArray[i] = collection.get(i).name;
+                retArray[i] = collection.get(i).getName();
             }
             return retArray;
         };
-        ibillTotalFinder = (collection) -> {
+        IBillTotalFinder = (collection) -> {
             int total = 0;
             for (int i = 0; i < collection.size(); i++) {
                 total += collection.get(i).getBill();
@@ -142,16 +142,16 @@ public class Main {
             switch (prob) {
                 case 1:
                     int timing = randNum.findNum(1, 60);
-                    newTask = new Update("2.0", timing, findBool.findTrueFalse());
+                    newTask = new UpdateTask("2.0", timing, findBool.findTrueFalse());
                     break;
                 case 2:
-                    newTask = new IHardwareMaintenance("old", "newest");
+                    newTask = new HardwareMaintenanceTask("old", "newest");
                     break;
                 case 3:
-                    newTask = new VirusRemoval("CPU", findBool.findTrueFalse());
+                    newTask = new VirusRemovalTask("CPU", findBool.findTrueFalse());
                     break;
                 case 4:
-                    newTask = new InstallSoftware("C://", findBool.findTrueFalse());
+                    newTask = new InstallSoftwareTask("C://", findBool.findTrueFalse());
                     break;
             }
             String name = lines.get(custNumber.custNumber(i, workNum));
@@ -169,7 +169,7 @@ public class Main {
         Manager mangerMan = new Manager("ManagerMan", Integer.toString(Main.numPeople), null, workers);
         computerRepairService = new ComputerRepairService(mangerMan, customerService);
 
-        String[] workerNameArray = arrayGenWorker.arrayGenerator(Manager.employees);
+        String[] workerNameArray = arrayGenWorker.arrayGenerator(Manager.getEmployees());
         String[] custNameArray = arrayGenCustomer.arrayGenerator(computerRepairService.getCustomerService().getCustomers());
         int workBobs = NameSearcher.search("Bob", workerNameArray);
         int custBobs = NameSearcher.search("Bob", custNameArray);
@@ -178,16 +178,16 @@ public class Main {
         ArrayList<WorkTicket> workTickets = new ArrayList<WorkTicket>();
         workTickets = generateWorkTickets(computerRepairService);
         assignTasks(computerRepairService, workTickets);
-        Manager.employees.forEach(n -> {
-            if (n.task != null) {
-                logger.info("Employee " + n.getName() + " is working on " + n.task);
+        Manager.getEmployees().forEach(n -> {
+            if (n.getTask() != null) {
+                logger.info("Employee " + n.getName() + " is working on " + n.getTask());
             }
         });
         solveTasks(computerRepairService, workTickets);
         ArrayList<WorkTicket> finalWorkTickets = workTickets;
-        int billTotal = ibillTotalFinder.generateTotal(computerRepairService.getCustomerService().getCustomers());
+        int billTotal = IBillTotalFinder.generateTotal(computerRepairService.getCustomerService().getCustomers());
         workTickets.forEach(n -> {
-            if (n.getStatus().equals("solved")) {
+            if (n.getStatus().equals(WorkTicket.Status.SOLVED)) {
                 logger.info("Issues.Task is solved, closing ticket");
                 n = null;
                 finalWorkTickets.remove(n);
@@ -232,15 +232,16 @@ public class Main {
         WorkTicket newWorkticket;
         for (int i = 0; i < customers.size(); i++) {
             Task currentTask = customers.get(i).getMachine().getProblem();
-            newWorkticket = new WorkTicket(currentTask, "incomplete", 0);
+            newWorkticket = new WorkTicket(currentTask, 0);
+            newWorkticket.setStatus(WorkTicket.Status.UNSOLVED);
             returnList.add(newWorkticket);
         }
         return returnList;
     }
 
     public static void assignTasks(ComputerRepairService service, ArrayList<WorkTicket> tasks) {
-        for (int i = 0; i < Manager.employees.size(); i++) {
-            Manager.employees.get(i).setTask(tasks.get(i).task);
+        for (int i = 0; i < Manager.getEmployees().size(); i++) {
+            Manager.getEmployees().get(i).setTask(tasks.get(i).getTask());
         }
     }
 
@@ -262,14 +263,21 @@ public class Main {
 
     public static void solveTasks(ComputerRepairService service, ArrayList<WorkTicket> tasks) {
         String status;
+        Boolean tempBool;
         StringFunction success = (str) -> str + " successfully!";
         StringFunction unsucess = (str) -> str + " unsucessfully!";
         Random rand = new Random();
         randomNum randNum = (x, y) -> (rand.nextInt(y - x) + x);
         recipts = new ArrayList<Recipt>();
-        for (int i = 0; i < Manager.employees.size(); i++) {
+        for (int i = 0; i < Manager.getEmployees().size(); i++) {
             Customer tempCust = service.getCustomerService().getCustomers().get(i);
-            status = Manager.employees.get(i).task.solve();
+            tempBool = Manager.getEmployees().get(i).getTask().solve();
+            if(tempBool){
+                status = "solved";
+            }
+            else{
+                status = "unsolved";
+            }
             String returnString = "Issues.Task " + i + " completed";
             if (status.equals("solved")) {
                 tasks.get(i).resolve();

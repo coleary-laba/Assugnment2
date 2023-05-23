@@ -1,11 +1,13 @@
-package People;
+package people;
 
-import Items.Machine;
+import items.Machine;
 
 import java.util.ArrayList;
 
 public class CustomerService implements Person {
-    public String workId;
+
+
+    private String workId;
     private final String name;
     private final String task;
     private final ArrayList<Customer> customers;
@@ -27,6 +29,13 @@ public class CustomerService implements Person {
         }
     }
 
+    public String getWorkId() {
+        return workId;
+    }
+
+    public void setWorkId(String workId) {
+        this.workId = workId;
+    }
     public ArrayList<Customer> getCustomers() {
         return customers;
     }

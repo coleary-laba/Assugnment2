@@ -1,12 +1,12 @@
-package Issues;
+package issues;
 
-import Interfaces.ISoftware;
+import interfaces.ISoftware;
 
-public class Update extends Task implements ISoftware {
+public class UpdateTask extends Task implements ISoftware {
     private int updateTime;
     private boolean requiresShutdown;
 
-    public Update(String newVersion, int newUpdateTime, boolean newRequiresShutdown) {
+    public UpdateTask(String newVersion, int newUpdateTime, boolean newRequiresShutdown) {
         version = newVersion;
         updateTime = newUpdateTime;
         requiresShutdown = newRequiresShutdown;
@@ -46,14 +46,13 @@ public class Update extends Task implements ISoftware {
     }
 
     @Override
-    public String solve() {
+    public boolean solve() {
         if (requiresShutdown) {
             updateRestart();
-            return "solved";
         } else {
             updateMachine();
-            return "solved";
         }
+        return solved;
     }
 
     @Override

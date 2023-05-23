@@ -1,7 +1,7 @@
-package Interfaces;
+package interfaces;
 
 import java.util.ArrayList;
 
-public interface IbillTotal<T> {
+public interface IBillTotal<T> {
     int generateTotal(ArrayList<T> collection);
 }

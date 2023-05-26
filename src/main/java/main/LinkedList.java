@@ -1,10 +1,14 @@
 package main;
 
 import items.WorkTicket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class LinkedList {
+public class LinkedList<W> {
 
     Node head;
+    private static final Logger LOGGER = LogManager.getLogger(LinkedList.class);
+
 
     public void add(WorkTicket t) {
         Node newNode = new Node(t);
@@ -77,10 +81,10 @@ public class LinkedList {
         if (head != null) {
             Node curNode = head;
             while (curNode.getNext() != null) {
-                Main.logger.info(curNode.getData().getTask().toString());
+                LOGGER.info(curNode.getData().getTask().toString());
                 curNode = curNode.getNext();
             }
-            Main.logger.info(curNode.getData().getTask().toString());
+            LOGGER.info(curNode.getData().getTask().toString());
         }
     }
 }

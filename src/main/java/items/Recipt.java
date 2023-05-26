@@ -1,12 +1,15 @@
 package items;
 
 import interfaces.IItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import people.Customer;
 
 public class Recipt implements IItem {
 
     private Customer customer;
     private int amount;
+    private static final Logger LOGGER = LogManager.getLogger(Recipt.class);
 
     public Recipt(Customer newCustomer, int newAmount) {
         customer = newCustomer;
@@ -23,6 +26,14 @@ public class Recipt implements IItem {
 
     @Override
     public void printItem() {
-        System.out.println("chkchhhk *Printing Noises*");
+        LOGGER.info("chkchhhk *Printing Noises*");
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

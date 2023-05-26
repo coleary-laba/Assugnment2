@@ -1,8 +1,10 @@
 package main;
 
+import Errors.*;
 import interfaces.IBillTotal;
 import interfaces.ICounterOfThings;
 import interfaces.IGenerator;
+import interfaces.IQueueGen;
 import issues.*;
 import items.Machine;
 import items.Recipt;
@@ -28,22 +30,21 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    public static ArrayList<Worker> workers;
-    public static ArrayList<Customer> customers;
-    public static Logger logger;
+    public static Vector<Worker> workers;
+    public static Queue<Customer> customers;
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
     public static ComputerRepairService computerRepairService;
     public static final int numPeople = 10;
-    public static ArrayList<Recipt> recipts;
+    public static HashSet<Recipt> recipts;
     public static int billpaied = 0;
     public static int totalpaid = 0;
 
     public static void main(String[] args) {
-
-        ICounterOfThings<String> NameSearcher;
+        ICounterOfThings<String> nameSearcher;
         IGenerator<Worker> arrayGenWorker;
-        IGenerator<Customer> arrayGenCustomer;
-        IBillTotal<Customer> IBillTotalFinder;
-        NameSearcher = (single, collection) -> {
+        IQueueGen<Customer> arrayGenCustomer;
+        IBillTotal<Customer> iBillTotal;
+        nameSearcher = (single, collection) -> {
             int count = 0;
             for (int i = 0; i < collection.length; i++) {
                 if (single.equals(collection[i])) {
@@ -61,63 +62,101 @@ public class Main {
         };
         arrayGenCustomer = (collection) -> {
             String[] retArray = new String[collection.size()];
-            for (int i = 0; i < collection.size(); i++) {
-                retArray[i] = collection.get(i).getName();
+            int iter = 0;
+            for (Customer cust : collection) {
+                retArray[iter] = cust.getName();
+                iter++;
             }
             return retArray;
         };
-        IBillTotalFinder = (collection) -> {
-            int total = 0;
-            for (int i = 0; i < collection.size(); i++) {
-                total += collection.get(i).getBill();
-            }
+        iBillTotal = (collection) -> {
+            int total = collection.stream().mapToInt(Recipt::getAmount).sum();
             return total;
         };
-        logger = LogManager.getLogger(ComputerRepairService.class);
         Random rand = new Random();
         Scanner scan = new Scanner(System.in);
         boolean workInit = false;
+        boolean custInit = false;
         boolean initChoiceMade = false;
         int workNum = 0;
+        int custNum = 0;
         int choice = 3;
-        workers = new ArrayList<Worker>();
-        customers = new ArrayList<Customer>();
+        workers = new Vector<>();
+        customers = new java.util.LinkedList<>();
         List<String> lines = new ArrayList<String>();
         randomNum randNum = (x, y) -> (rand.nextInt(y - x) + x);
         actualNum custNumber = (a, b) -> a + b;
-        logger.info("use own names for charecters or use prexisting ones? 1 for prexisting, 0 for create own");
+        LOGGER.info("use own names for charecters or use prexisting ones? 1 for prexisting, 0 for create own");
         while (!initChoiceMade) {
             try {
                 choice = Integer.parseInt(scan.next());
             } catch (InputMismatchException e) {
-                logger.info("Improper input");
+                LOGGER.info("Improper input");
             }
             if (choice == 1 || choice == 0) {
                 initChoiceMade = true;
             }
         }
         if (choice == 0) {
-            logger.info("Roger, using names you make");
+            LOGGER.info("Roger, using names you make");
             while (!workInit) {
-                logger.info("Input the number of workers (will also be number of customers");
+                LOGGER.info("Input the number of workers (will also be number of customers");
                 try {
                     workNum = Integer.parseInt(scan.next());
                 } catch (InputMismatchException e) {
-                    logger.info("Invalid Input");
+                    LOGGER.info("Invalid Input");
+                }
+                try {
+                    if (workNum == 0) {
+                        throw new NoPeople("No Workers");
+                    }
+                } catch (NoPeople ex) {
+                    LOGGER.info("No Workers inputed");
+                }
+            }
+            while (!custInit) {
+                LOGGER.info("Input the number of workers (will also be number of customers");
+                try {
+                    custNum = Integer.parseInt(scan.next());
+                } catch (InputMismatchException e) {
+                    LOGGER.info("Invalid Input");
+                }
+                try {
+                    if (custNum == 0) {
+                        throw new NoPeople("No Workers");
+                    }
+                } catch (NoPeople ex) {
+                    LOGGER.info("No Customers inputed");
                 }
             }
             for (int i = 0; i < workNum; i++) {
-                logger.info("Input worker name: must be under 10 characters");
+                LOGGER.info("Input worker name: must be under 10 characters");
                 String name = scan.next();
+                try {
+                    if (name.length() > 10) {
+                        throw new InvalidLength("Invalid length");
+                    }
+                } catch (InvalidLength ex) {
+                    LOGGER.info("Invalid name length");
+                    name = "Bob";
+                }
                 lines.add(name);
             }
-            for (int i = 0; i < workNum; i++) {
-                logger.info("Input customer name: must be under 10 characters");
+            for (int i = 0; i < custNum; i++) {
+                LOGGER.info("Input customer name: must be under 10 characters");
                 String name = scan.next();
+                try {
+                    if (name.length() > 10) {
+                        throw new InvalidLength("Invalid length");
+                    }
+                } catch (InvalidLength ex) {
+                    LOGGER.info("Invalid name length");
+                    name = "Bob";
+                }
                 lines.add(name);
             }
         } else {
-            logger.info("roger, using our names");
+            LOGGER.info("roger, using our names");
             try {
                 File file = new File("E:\\programs\\InteliJ\\Projects\\Assignment2\\src\\main\\java\\names.txt");
                 lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
@@ -130,9 +169,9 @@ public class Main {
         }
         AtomicInteger counter = new AtomicInteger();
         lines.forEach(n -> counter.addAndGet(StringUtils.countMatches(n, "Bob")));
-        logger.info("The name Bob was in the selection of names " + counter + " times");
+        LOGGER.info("The name Bob was in the selection of names " + counter + " times");
         int numPeople = lines.size();
-        for (int i = 0; i < workNum; i++) {
+        for (int i = 0; i < custNum; i++) {
             Task newTask = null;
             int prob = randNum.findNum(1, 5);
             trueOrFalse findBool = () -> rand.nextBoolean();
@@ -152,67 +191,80 @@ public class Main {
                     break;
             }
             String name = lines.get(custNumber.custNumber(i, workNum));
-            customers.add(new Customer(lines.get(custNumber.custNumber(i, workNum)), name + i + "@email.com", "1234567890", null));
+            Customer newCust = new Customer(lines.get(custNumber.custNumber(i, workNum)), name + i + "@email.com", "1234567890", null);
             Machine newMachine = new Machine(newTask, null, "10", "Computer");
-            customers.get(i).setMachine(newMachine);
+            newCust.setMachine(newMachine);
+            customers.add(newCust);
         }
         for (int j = 0; j < workNum; j++) {
             workers.add(new Worker(lines.get(j), Integer.toString(j), null));
         }
         scan.close();
         long bobCount = lines.stream().filter(item -> item.startsWith("Bob")).count();
-        logger.info("total count of names that start with bob " + bobCount);
+        LOGGER.info("");
+        LOGGER.info("total count of names that start with bob " + bobCount);
         CustomerService customerService = new CustomerService("CustomerServicePerson", Integer.toString(Main.numPeople + 1), null, customers);
         Manager mangerMan = new Manager("ManagerMan", Integer.toString(Main.numPeople), null, workers);
         computerRepairService = new ComputerRepairService(mangerMan, customerService);
 
-        String[] workerNameArray = arrayGenWorker.arrayGenerator(Manager.getEmployees());
-        String[] custNameArray = arrayGenCustomer.arrayGenerator(computerRepairService.getCustomerService().getCustomers());
-        int workBobs = NameSearcher.search("Bob", workerNameArray);
-        int custBobs = NameSearcher.search("Bob", custNameArray);
-        logger.info("Number of Bobs in Workers: " + workBobs);
-        logger.info("Number of Bobs in Customers: " + custBobs);
-        ArrayList<WorkTicket> workTickets = new ArrayList<WorkTicket>();
+        Queue<Customer> tempCust = computerRepairService.getCustomerService().getCustomers();
+        String[] workerNameArray = arrayGenWorker.arrayGeneratorWork(Manager.getEmployees());
+        String[] custNameArray = arrayGenCustomer.arrayGeneratorCust(tempCust);
+        int workBobs = nameSearcher.search("Bob", workerNameArray);
+        int custBobs = nameSearcher.search("Bob", custNameArray);
+        LOGGER.info("Number of Bobs in Workers: " + workBobs);
+        LOGGER.info("Number of Bobs in Customers: " + custBobs);
+        LOGGER.info("");
+
+        LinkedList<WorkTicket> workTickets = new LinkedList<>();
         workTickets = generateWorkTickets(computerRepairService);
+        LOGGER.info("");
         assignTasks(computerRepairService, workTickets);
+        LOGGER.info("");
         Manager.getEmployees().forEach(n -> {
             if (n.getTask() != null) {
-                logger.info("Employee " + n.getName() + " is working on " + n.getTask());
+                LOGGER.info("Employee " + n.getName() + " is working on " + n.getTask());
             }
         });
         solveTasks(computerRepairService, workTickets);
-        ArrayList<WorkTicket> finalWorkTickets = workTickets;
-        int billTotal = IBillTotalFinder.generateTotal(computerRepairService.getCustomerService().getCustomers());
-        workTickets.forEach(n -> {
-            if (n.getStatus().equals(Status.SOLVED)) {
-                logger.info("Issues.Task is solved, closing ticket");
-                n = null;
-                finalWorkTickets.remove(n);
+        LOGGER.info("");
+        int billTotal = iBillTotal.generateTotal(recipts);
+        for (int i = 0; i < workTickets.size(); i++) {
+            if (workTickets.get(i).getStatus().equals(Status.SOLVED)) {
+                workTickets.remove(i);
             }
-
-        });
-        workTickets = finalWorkTickets;
+        }
         boolean allDone;
         if (workTickets.size() != 0) {
             allDone = false;
-            logger.info("Some work Tickets cannot be solved, some requests are impossible. " + workTickets.size() + " tickets remaining");
+            LOGGER.info("Some work Tickets cannot be solved, some requests are impossible. " + workTickets.size() + " tickets remaining");
         } else {
             allDone = true;
         }
-        logger.info("Completed People.Customer reactions:");
+        LOGGER.info("Completed People.Customer reactions:");
         List<Customer> completedCustomers = computerRepairService.getCustomerService().getCustomers().stream().filter(customer -> customer.getBill() > 0).collect(Collectors.toList());
-        completedCustomers.forEach(n -> logger.info(n.reaction.getReaction(n.reaction)));
+        completedCustomers.forEach(n -> LOGGER.info(n.getReaction().getReaction(n.getReaction())));
         if (!allDone) {
-            logger.info("Uncompleted customers reactions: (Uh oh)");
+            LOGGER.info("Uncompleted customers reactions: (Uh oh)");
             List<Customer> unCompletedCustomers = computerRepairService.getCustomerService().getCustomers().stream().filter(customer -> customer.getBill() == 0).collect(Collectors.toList());
-            unCompletedCustomers.forEach(n -> logger.info(n.reaction.getReaction(n.reaction)));
-            computerRepairService.getCustomerService().getCustomers().forEach(n -> n.processBill());
+            unCompletedCustomers.forEach(n -> LOGGER.info(n.getReaction().getReaction(n.getReaction())));
+            computerRepairService.getCustomerService().getCustomers().forEach(n -> {
+                try {
+                    n.processBill();
+                } catch (NotEnoughCash e) {
+                    LOGGER.info(n.getName() + " could not pay their bill and has fled");
+                }
+            });
         }
-        logger.info("Total bill (minus tips) is: " + billTotal);
-        logger.info("Total paid bills: " + billpaied);
-        logger.info("Total income (with tips) " + totalpaid);
+        LOGGER.info("");
+        LOGGER.info("Total bill (minus tips) is: " + billTotal);
+        LOGGER.info("Total paid bills: " + billpaied);
+        LOGGER.info("Total income (with tips) " + totalpaid);
+        LOGGER.info("");
+        LOGGER.info("");
+        Queue<Customer> customerPrint = customerService.getCustomers();
         try {
-            customerService.getCustomers().get(1).printer();
+            customerPrint.poll().printer();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -222,13 +274,14 @@ public class Main {
         }
     }
 
-    public static ArrayList<WorkTicket> generateWorkTickets(ComputerRepairService repairService) {
-        ArrayList<WorkTicket> returnList = new ArrayList<WorkTicket>();
+    public static LinkedList<WorkTicket> generateWorkTickets(ComputerRepairService repairService) {
+        LinkedList<WorkTicket> returnList = new LinkedList<>();
         CustomerService customerService = repairService.getCustomerService();
-        ArrayList<Customer> customers = customerService.getCustomers();
+        Queue<Customer> customers = customerService.getCustomers();
         WorkTicket newWorkticket;
-        for (int i = 0; i < customers.size(); i++) {
-            Task currentTask = customers.get(i).getMachine().getProblem();
+        int counter = 0;
+        for (Customer cust : customers) {
+            Task currentTask = cust.getMachine().getProblem();
             newWorkticket = new WorkTicket(currentTask, 0);
             newWorkticket.setStatus(Status.UNSOLVED);
             returnList.add(newWorkticket);
@@ -236,8 +289,21 @@ public class Main {
         return returnList;
     }
 
-    public static void assignTasks(ComputerRepairService service, ArrayList<WorkTicket> tasks) {
-        for (int i = 0; i < Manager.getEmployees().size(); i++) {
+    public static void assignTasks(ComputerRepairService service, LinkedList<WorkTicket> tasks) {
+        int numCount = Manager.getEmployees().size();
+        try {
+            if (service.getManager().getEmployees().size() > tasks.size()) {
+                throw new ToManyWorkers("More Workers then tasks");
+            } else if (service.getManager().getEmployees().size() < tasks.size()) {
+                throw new NotEnoughWorkers("More Tasks then workers");
+            }
+        } catch (ToManyWorkers toManyWorkers) {
+            LOGGER.info("To many workers vs tasks! some workers will be unused");
+            numCount = tasks.size();
+        } catch (NotEnoughWorkers notEnoughWorkers) {
+            LOGGER.info("Not all tasks will be solved");
+        }
+        for (int i = 0; i < numCount; i++) {
             Manager.getEmployees().get(i).setTask(tasks.get(i).getTask());
         }
     }
@@ -258,16 +324,17 @@ public class Main {
         int findNum(int x, int y);
     }
 
-    public static void solveTasks(ComputerRepairService service, ArrayList<WorkTicket> tasks) {
+    public static void solveTasks(ComputerRepairService service, LinkedList<WorkTicket> tasks) {
         String status;
         Boolean tempBool;
         StringFunction success = (str) -> str + " successfully!";
         StringFunction unsucess = (str) -> str + " unsucessfully!";
         Random rand = new Random();
         randomNum randNum = (x, y) -> (rand.nextInt(y - x) + x);
-        recipts = new ArrayList<Recipt>();
+        recipts = new HashSet<>();
+        Queue<Customer> tempCustomers = service.getCustomerService().getCustomers();
         for (int i = 0; i < Manager.getEmployees().size(); i++) {
-            Customer tempCust = service.getCustomerService().getCustomers().get(i);
+            Customer tempCust = tempCustomers.poll();
             tempBool = Manager.getEmployees().get(i).getTask().solve();
             if (tempBool) {
                 status = "solved";
@@ -281,16 +348,16 @@ public class Main {
                 int reactNum = randNum.findNum(1, 5);
                 switch (reactNum) {
                     case 1:
-                        tempCust.reaction = Reaction.HAPPY;
+                        tempCust.setReaction(Reaction.HAPPY);
                         break;
                     case 2:
-                        tempCust.reaction = Reaction.APPRECIATIVE;
+                        tempCust.setReaction(Reaction.APPRECIATIVE);
                         break;
                     case 3:
-                        tempCust.reaction = Reaction.PLEASED;
+                        tempCust.setReaction(Reaction.PLEASED);
                         break;
                     case 4:
-                        tempCust.reaction = Reaction.DISAPPOINTED;
+                        tempCust.setReaction(Reaction.DISAPPOINTED);
                         break;
                 }
                 tempCust.bill(bill);
@@ -300,39 +367,43 @@ public class Main {
                 int reactNum = randNum.findNum(1, 2);
                 switch (reactNum) {
                     case 1:
-                        tempCust.reaction = Reaction.DISAPPOINTED;
+                        tempCust.setReaction(Reaction.DISAPPOINTED);
                         break;
                     case 2:
-                        tempCust.reaction = Reaction.IRATE;
+                        tempCust.setReaction(Reaction.IRATE);
                         break;
                 }
                 returnString = unsucess.run(returnString);
             }
-            service.getCustomerService().getCustomers().set(i, tempCust);
-            logger.info(returnString);
+            service.getCustomerService().getCustomers().add(tempCust);
+            LOGGER.info(returnString);
+            recipts.forEach(n -> {
+                LOGGER.info("Recipt Issued to: " + n.getCustomer());
+                n.printItem();
+            });
         }
     }
 
     public static void printInformation() throws ClassNotFoundException {
         Class examp = Customer.class;
         Constructor[] constructors = examp.getDeclaredConstructors();
-        logger.info("Class info");
+        LOGGER.info("Class info");
         for (Constructor con : constructors) {
-            logger.info("Name of constructor : " + con);
-            logger.info("Count of params : " + con.getParameterCount());
+            LOGGER.info("Name of constructor : " + con);
+            LOGGER.info("Count of params : " + con.getParameterCount());
             Parameter[] params = con.getParameters();
             for (Parameter param : params) {
-                logger.info("Param : " + param);
+                LOGGER.info("Param : " + param);
             }
         }
         Method[] methods = examp.getMethods();
-        logger.info("Class methods:");
+        LOGGER.info("Class methods:");
         for (Method meth : methods) {
-            logger.info("Method name : " + meth.getName() + " returns : " + meth.getReturnType());
-            logger.info(meth.getName() + " has params: ");
+            LOGGER.info("Method name : " + meth.getName() + " returns : " + meth.getReturnType());
+            LOGGER.info(meth.getName() + " has params: ");
             Parameter[] methParams = meth.getParameters();
             for (Parameter methparam : methParams) {
-                logger.info(methparam);
+                LOGGER.info(methparam);
             }
         }
     }

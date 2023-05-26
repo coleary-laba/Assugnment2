@@ -2,16 +2,16 @@ package people;
 
 import items.Machine;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class Manager extends Worker implements IPerson {
 
     private String workId;
     private String manTask;
-    private static ArrayList<Worker> employees;
+    private static Vector<Worker> employees;
     private Machine machine;
 
-    public Manager(String newName, String newWorkId, String newTask, ArrayList<Worker> newEmployees) {
+    public Manager(String newName, String newWorkId, String newTask, Vector<Worker> newEmployees) {
         name = newName;
         workId = newWorkId;
         manTask = newTask;
@@ -34,11 +34,11 @@ public class Manager extends Worker implements IPerson {
         this.manTask = manTask;
     }
 
-    public static ArrayList<Worker> getEmployees() {
+    public static Vector<Worker> getEmployees() {
         return employees;
     }
 
-    public static void setEmployees(ArrayList<Worker> employees) {
+    public static void setEmployees(Vector<Worker> employees) {
         Manager.employees = employees;
     }
 

@@ -12,6 +12,7 @@ public class InstallSoftwareTask extends Task implements ISoftware {
         spaceAvailable = newSpaceAvailable;
     }
 
+    @Override
     public String toString() {
         return "Software installation, status: " + solved;
     }

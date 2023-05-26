@@ -1,8 +1,10 @@
 package interfaces;
 
-import java.util.ArrayList;
+import people.Worker;
+
+import java.util.Vector;
 
 public interface IGenerator<T> {
 
-    String[] arrayGenerator(ArrayList<T> collection);
+    String[] arrayGeneratorWork(Vector<Worker> collection);
 }

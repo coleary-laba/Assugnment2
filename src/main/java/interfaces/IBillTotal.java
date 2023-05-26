@@ -1,8 +1,10 @@
 package interfaces;
 
-import java.util.ArrayList;
+import items.Recipt;
+
+import java.util.HashSet;
 
 public interface IBillTotal<T> {
 
-    int generateTotal(ArrayList<T> collection);
+    int generateTotal(HashSet<Recipt> collection);
 }

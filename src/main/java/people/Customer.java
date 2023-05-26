@@ -1,7 +1,10 @@
 package people;
 
+import Errors.NotEnoughCash;
 import items.Machine;
 import main.Main;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,11 +17,8 @@ public class Customer implements IPerson {
     private Machine machine;
     private int funds;
     private int bill;
-    public Reaction reaction;
-
-    public Customer() {
-
-    }
+    private Reaction reaction;
+    private static final Logger LOGGER = LogManager.getLogger(Customer.class);
 
     public Customer(String newName, String newEmail, String newPhone, Machine newMachine) {
         name = newName;
@@ -30,6 +30,14 @@ public class Customer implements IPerson {
         this.reaction = Reaction.NOREACTION;
     }
 
+    public Reaction getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(Reaction reaction) {
+        this.reaction = reaction;
+    }
+
     public void bill(int newBill) {
         bill = newBill;
     }
@@ -38,19 +46,19 @@ public class Customer implements IPerson {
         return bill;
     }
 
-    public void processBill() {
+    public void processBill() throws NotEnoughCash {
         int paid = 0;
         if ((bill == 0) || (reaction == Reaction.NOREACTION)) {
-            Main.logger.info("Improper bill time");
+            LOGGER.info("Improper bill time");
         } else {
             if (funds < bill) {
-                Main.logger.info("Uh oh! " + name + " can not pay, and has fled");
+                throw new NotEnoughCash("No Moneys");
             } else {
                 paid = bill;
                 funds -= bill;
                 Main.billpaied += paid;
                 Main.totalpaid += paid;
-                Main.logger.info(name + " has paid their bill in full");
+                LOGGER.info(name + " has paid their bill in full");
                 if (funds > 0) {
                     double tipAmount = reaction.getTip() * bill;
                     if (funds > tipAmount) {
@@ -65,7 +73,7 @@ public class Customer implements IPerson {
                 }
             }
         }
-        Main.logger.info("People.Customer " + name + " has paid a total of " + paid + " for their service");
+        LOGGER.info("People.Customer " + name + " has paid a total of " + paid + " for their service");
     }
 
     public Machine getMachine() {
@@ -105,7 +113,7 @@ public class Customer implements IPerson {
 
     public void printer() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method printInfo = Main.class.getDeclaredMethod("printInformation");
-        Customer cust = new Customer();
+        Customer cust = new Customer("noName", "noMEail", "0000000000", null);
         printInfo.invoke(cust);
     }
 }

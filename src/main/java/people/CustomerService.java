@@ -2,17 +2,17 @@ package people;
 
 import items.Machine;
 
-import java.util.ArrayList;
+import java.util.Queue;
 
 public class CustomerService implements IPerson {
 
     private String workId;
     private final String name;
     private final String task;
-    private final ArrayList<Customer> customers;
+    private final Queue<Customer> customers;
     private Machine machine;
 
-    public CustomerService(String newName, String newWorkId, String newTask, ArrayList<Customer> newCustomers) {
+    public CustomerService(String newName, String newWorkId, String newTask, Queue<Customer> newCustomers) {
         name = newName;
         workId = newWorkId;
         task = newTask;
@@ -35,7 +35,7 @@ public class CustomerService implements IPerson {
         this.workId = workId;
     }
 
-    public ArrayList<Customer> getCustomers() {
+    public Queue<Customer> getCustomers() {
         return customers;
     }
 }

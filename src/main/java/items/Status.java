@@ -1,5 +1,7 @@
 package items;
 
 public enum Status {
-    SOLVED, UNSOLVED;
+    SOLVED,
+    UNSOLVED;
+
 }

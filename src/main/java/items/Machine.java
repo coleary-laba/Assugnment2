@@ -1,8 +1,8 @@
 package items;
 
+import interfaces.IPerson;
 import issues.Task;
 import people.Customer;
-import people.IPerson;
 
 public class Machine {
 

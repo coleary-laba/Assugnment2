@@ -1,5 +1,6 @@
 package people;
 
+import interfaces.IPerson;
 import items.Machine;
 
 import java.util.Queue;

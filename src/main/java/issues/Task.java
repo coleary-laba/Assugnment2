@@ -21,7 +21,7 @@ public abstract class Task {
     }
 
     public String toString() {
-        return null;
+        return "Is a task";
     }
 
     public abstract boolean solve();

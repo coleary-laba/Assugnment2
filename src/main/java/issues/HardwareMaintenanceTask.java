@@ -10,11 +10,6 @@ public class HardwareMaintenanceTask extends Task implements IHardware {
         version = newVersion;
     }
 
-    @Override
-    public String toString() {
-        return "hardware maintenance, status: " + solved;
-    }
-
     public void maintain() {
         solved = true;
     }
@@ -49,5 +44,10 @@ public class HardwareMaintenanceTask extends Task implements IHardware {
     @Override
     public void changeHardware(Hardware newHardware) {
         hardware = newHardware;
+    }
+
+    @Override
+    public String toString() {
+        return "hardware maintenance, status: " + solved;
     }
 }

@@ -12,10 +12,6 @@ public class VirusRemovalTask extends Task implements ISoftware {
         isRemovable = newIsRemovable;
     }
 
-    public String toString() {
-        return "virus removal, status: " + solved;
-    }
-
     public String getVirusLocation() {
         return virusLocation;
     }
@@ -50,5 +46,9 @@ public class VirusRemovalTask extends Task implements ISoftware {
     @Override
     public void fixIssues() {
         virusLocation = null;
+    }
+
+    public String toString() {
+        return "virus removal, status: " + solved;
     }
 }

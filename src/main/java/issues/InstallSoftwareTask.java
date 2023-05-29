@@ -12,11 +12,6 @@ public class InstallSoftwareTask extends Task implements ISoftware {
         spaceAvailable = newSpaceAvailable;
     }
 
-    @Override
-    public String toString() {
-        return "Software installation, status: " + solved;
-    }
-
     public String getSoftwareLocation() {
         return softwareDrive;
     }
@@ -39,10 +34,13 @@ public class InstallSoftwareTask extends Task implements ISoftware {
         return solved;
     }
 
-    //If there is space on the disk then the software should be installed just fine
-    //otherwise, wont successfully install, to add some variability to outcomes
     @Override
     public void fixIssues() {
         solved = spaceAvailable;
+    }
+
+    @Override
+    public String toString() {
+        return "Software installation, status: " + solved;
     }
 }

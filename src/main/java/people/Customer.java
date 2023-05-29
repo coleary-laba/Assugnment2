@@ -1,6 +1,7 @@
 package people;
 
-import Errors.NotEnoughCash;
+import exceptions.NotEnoughCashException;
+import interfaces.IPerson;
 import items.Machine;
 import main.Main;
 import org.apache.logging.log4j.LogManager;
@@ -46,13 +47,13 @@ public class Customer implements IPerson {
         return bill;
     }
 
-    public void processBill() throws NotEnoughCash {
+    public void processBill() throws NotEnoughCashException {
         int paid = 0;
         if ((bill == 0) || (reaction == Reaction.NOREACTION)) {
             LOGGER.info("Improper bill time");
         } else {
             if (funds < bill) {
-                throw new NotEnoughCash("No Moneys");
+                throw new NotEnoughCashException("No Moneys");
             } else {
                 paid = bill;
                 funds -= bill;

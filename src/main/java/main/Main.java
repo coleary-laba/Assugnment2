@@ -1,6 +1,6 @@
 package main;
 
-import Errors.*;
+import exceptions.*;
 import interfaces.IBillTotal;
 import interfaces.ICounterOfThings;
 import interfaces.IGenerator;
@@ -15,6 +15,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import people.*;
+import threading.Connection;
+import threading.ConnectionPool;
+import threading.NewRunnable;
+import threading.NewThread;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,19 +29,24 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Main {
 
-    public static Vector<Worker> workers;
-    public static Queue<Customer> customers;
+    public static Vector<Worker> workers = new Vector<>();
+    public static Queue<Customer> customers = new java.util.LinkedList<>();
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
     public static ComputerRepairService computerRepairService;
     public static final int numPeople = 10;
     public static HashSet<Recipt> recipts;
     public static int billpaied = 0;
     public static int totalpaid = 0;
+    public static ExecutorService execServ;
+    public static ConnectionPool conPool;
 
     public static void main(String[] args) {
         ICounterOfThings<String> nameSearcher;
@@ -81,8 +90,6 @@ public class Main {
         int workNum = 0;
         int custNum = 0;
         int choice = 3;
-        workers = new Vector<>();
-        customers = new java.util.LinkedList<>();
         List<String> lines = new ArrayList<String>();
         randomNum randNum = (x, y) -> (rand.nextInt(y - x) + x);
         actualNum custNumber = (a, b) -> a + b;
@@ -108,9 +115,9 @@ public class Main {
                 }
                 try {
                     if (workNum == 0) {
-                        throw new NoPeople("No Workers");
+                        throw new NoPeopleException("No Workers");
                     }
-                } catch (NoPeople ex) {
+                } catch (NoPeopleException ex) {
                     LOGGER.info("No Workers inputed");
                 }
             }
@@ -123,9 +130,9 @@ public class Main {
                 }
                 try {
                     if (custNum == 0) {
-                        throw new NoPeople("No Workers");
+                        throw new NoPeopleException("No Workers");
                     }
-                } catch (NoPeople ex) {
+                } catch (NoPeopleException ex) {
                     LOGGER.info("No Customers inputed");
                 }
             }
@@ -134,9 +141,9 @@ public class Main {
                 String name = scan.next();
                 try {
                     if (name.length() > 10) {
-                        throw new InvalidLength("Invalid length");
+                        throw new InvalidLengthException("Invalid length");
                     }
-                } catch (InvalidLength ex) {
+                } catch (InvalidLengthException ex) {
                     LOGGER.info("Invalid name length");
                     name = "Bob";
                 }
@@ -147,9 +154,9 @@ public class Main {
                 String name = scan.next();
                 try {
                     if (name.length() > 10) {
-                        throw new InvalidLength("Invalid length");
+                        throw new InvalidLengthException("Invalid length");
                     }
-                } catch (InvalidLength ex) {
+                } catch (InvalidLengthException ex) {
                     LOGGER.info("Invalid name length");
                     name = "Bob";
                 }
@@ -158,9 +165,10 @@ public class Main {
         } else {
             LOGGER.info("roger, using our names");
             try {
-                File file = new File("E:\\programs\\InteliJ\\Projects\\Assignment2\\src\\main\\java\\names.txt");
+                File file = new File("src/main/java/names.txt");
                 lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
                 workNum = 10;
+                custNum = 10;
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
@@ -251,7 +259,7 @@ public class Main {
             computerRepairService.getCustomerService().getCustomers().forEach(n -> {
                 try {
                     n.processBill();
-                } catch (NotEnoughCash e) {
+                } catch (NotEnoughCashException e) {
                     LOGGER.info(n.getName() + " could not pay their bill and has fled");
                 }
             });
@@ -272,6 +280,7 @@ public class Main {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+        LOGGER.info(connectMaker());
     }
 
     public static LinkedList<WorkTicket> generateWorkTickets(ComputerRepairService repairService) {
@@ -293,14 +302,14 @@ public class Main {
         int numCount = Manager.getEmployees().size();
         try {
             if (service.getManager().getEmployees().size() > tasks.size()) {
-                throw new ToManyWorkers("More Workers then tasks");
+                throw new ToManyWorkersException("More Workers then tasks");
             } else if (service.getManager().getEmployees().size() < tasks.size()) {
-                throw new NotEnoughWorkers("More Tasks then workers");
+                throw new NotEnoughWorkersException("More Tasks then workers");
             }
-        } catch (ToManyWorkers toManyWorkers) {
+        } catch (ToManyWorkersException toManyWorkersException) {
             LOGGER.info("To many workers vs tasks! some workers will be unused");
             numCount = tasks.size();
-        } catch (NotEnoughWorkers notEnoughWorkers) {
+        } catch (NotEnoughWorkersException notEnoughWorkersException) {
             LOGGER.info("Not all tasks will be solved");
         }
         for (int i = 0; i < numCount; i++) {
@@ -406,6 +415,37 @@ public class Main {
                 LOGGER.info(methparam);
             }
         }
+    }
+
+    public static String connectMaker(){
+        Thread thread1 = new NewThread("Thread1");
+        Runnable thread2 = new NewRunnable("Thread2");
+        thread1.run();
+        thread2.run();
+        int connections = 7;
+        String retString = "Completed";
+        execServ = Executors.newFixedThreadPool(connections);
+        conPool = new ConnectionPool();
+        ArrayList<CompletableFuture<Void>> completeInFuture = new ArrayList<>();
+        for(int i = 0; i < connections; i++){
+            CompletableFuture<Void> completeSoon = CompletableFuture.runAsync(() ->{
+                try{
+                    Connection curConn = conPool.getConnect();
+                    String name = curConn.getName();
+                    LOGGER.info(curConn.begin());
+                    Thread.sleep(2000);
+                    curConn.finish();
+                    LOGGER.info(curConn.finish());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }, execServ);
+            completeInFuture.add(completeSoon);
+        }
+
+        execServ.shutdown();
+
+        return retString;
     }
 }
 //static block

@@ -25,11 +25,6 @@ public class UpdateTask extends Task implements ISoftware {
         solved = true;
     }
 
-    @Override
-    public String toString() {
-        return "update, status: " + solved;
-    }
-
     public int getUpdateTime() {
         return updateTime;
     }
@@ -60,5 +55,10 @@ public class UpdateTask extends Task implements ISoftware {
     @Override
     public void fixIssues() {
         version = Version.NEWEST;
+    }
+
+    @Override
+    public String toString() {
+        return "update, status: " + solved;
     }
 }

@@ -1,5 +1,6 @@
 package people;
 
+import interfaces.IPerson;
 import issues.Task;
 import items.Machine;
 

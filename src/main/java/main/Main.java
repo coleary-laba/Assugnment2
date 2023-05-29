@@ -49,39 +49,6 @@ public class Main {
     public static ConnectionPool conPool;
 
     public static void main(String[] args) {
-        ICounterOfThings<String> nameSearcher;
-        IGenerator<Worker> arrayGenWorker;
-        IQueueGen<Customer> arrayGenCustomer;
-        IBillTotal<Customer> iBillTotal;
-        nameSearcher = (single, collection) -> {
-            int count = 0;
-            for (int i = 0; i < collection.length; i++) {
-                if (single.equals(collection[i])) {
-                    count++;
-                }
-            }
-            return count;
-        };
-        arrayGenWorker = (collection) -> {
-            String[] retArray = new String[collection.size()];
-            for (int i = 0; i < collection.size(); i++) {
-                retArray[i] = collection.get(i).getName();
-            }
-            return retArray;
-        };
-        arrayGenCustomer = (collection) -> {
-            String[] retArray = new String[collection.size()];
-            int iter = 0;
-            for (Customer cust : collection) {
-                retArray[iter] = cust.getName();
-                iter++;
-            }
-            return retArray;
-        };
-        iBillTotal = (collection) -> {
-            int total = collection.stream().mapToInt(Recipt::getAmount).sum();
-            return total;
-        };
         Random rand = new Random();
         Scanner scan = new Scanner(System.in);
         boolean workInit = false;
@@ -216,8 +183,33 @@ public class Main {
         computerRepairService = new ComputerRepairService(mangerMan, customerService);
 
         Queue<Customer> tempCust = computerRepairService.getCustomerService().getCustomers();
+        IGenerator<Worker> arrayGenWorker = (collection) -> {
+            String[] retArray = new String[collection.size()];
+            for (int i = 0; i < collection.size(); i++) {
+                retArray[i] = collection.get(i).getName();
+            }
+            return retArray;
+        };
+        IQueueGen<Customer> arrayGenCustomer = (collection) -> {
+            String[] retArray = new String[collection.size()];
+            int iter = 0;
+            for (Customer cust : collection) {
+                retArray[iter] = cust.getName();
+                iter++;
+            }
+            return retArray;
+        };
         String[] workerNameArray = arrayGenWorker.arrayGeneratorWork(Manager.getEmployees());
         String[] custNameArray = arrayGenCustomer.arrayGeneratorCust(tempCust);
+        ICounterOfThings<String> nameSearcher = (single, collection) -> {
+            int count = 0;
+            for (int i = 0; i < collection.length; i++) {
+                if (single.equals(collection[i])) {
+                    count++;
+                }
+            }
+            return count;
+        };
         int workBobs = nameSearcher.search("Bob", workerNameArray);
         int custBobs = nameSearcher.search("Bob", custNameArray);
         LOGGER.info("Number of Bobs in Workers: " + workBobs);
@@ -236,6 +228,10 @@ public class Main {
         });
         solveTasks(computerRepairService, workTickets);
         LOGGER.info("");
+        IBillTotal<Customer> iBillTotal = (collection) -> {
+            int total = collection.stream().mapToInt(Recipt::getAmount).sum();
+            return total;
+        };
         int billTotal = iBillTotal.generateTotal(recipts);
         for (int i = 0; i < workTickets.size(); i++) {
             if (workTickets.get(i).getStatus().equals(Status.SOLVED)) {
@@ -417,7 +413,7 @@ public class Main {
         }
     }
 
-    public static String connectMaker(){
+    public static String connectMaker() {
         Thread thread1 = new NewThread("Thread1");
         Runnable thread2 = new NewRunnable("Thread2");
         thread1.run();
@@ -427,9 +423,9 @@ public class Main {
         execServ = Executors.newFixedThreadPool(connections);
         conPool = new ConnectionPool();
         ArrayList<CompletableFuture<Void>> completeInFuture = new ArrayList<>();
-        for(int i = 0; i < connections; i++){
-            CompletableFuture<Void> completeSoon = CompletableFuture.runAsync(() ->{
-                try{
+        for (int i = 0; i < connections; i++) {
+            CompletableFuture<Void> completeSoon = CompletableFuture.runAsync(() -> {
+                try {
                     Connection curConn = conPool.getConnect();
                     String name = curConn.getName();
                     LOGGER.info(curConn.begin());

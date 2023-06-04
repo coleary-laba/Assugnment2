@@ -1,31 +1,37 @@
+package items;
+
+import interfaces.IPerson;
+import issues.Task;
+import people.Customer;
+
 public class Machine {
 
-    private String problem;
-    private Customer owner;
+    private Task problem;
+    private IPerson owner;
     private String operatingSystem;
     private String deviceType;
 
-    public Machine(String newProblem, Customer newOwner, String newOperatingSystem, String newDeviceType) {
+    public Machine(Task newProblem, IPerson newOwner, String newOperatingSystem, String newDeviceType) {
         problem = newProblem;
         owner = newOwner;
         operatingSystem = newOperatingSystem;
         deviceType = newDeviceType;
     }
 
-    public String getProblem() {
+    public Task getProblem() {
         return problem;
     }
 
-    public void setProblem(String newProblem) {
+    public void setProblem(Task newProblem) {
         problem = newProblem;
     }
 
     public Customer getOwner() {
-        return owner;
+        return (Customer) owner;
     }
 
-    public void setOwner(Customer owner) {
-
+    public void setOwner(IPerson owner) {
+        this.owner = owner;
     }
 
     public String getOperatingSystem() {

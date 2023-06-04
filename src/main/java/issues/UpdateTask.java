@@ -1,26 +1,28 @@
-public class Update extends Task{
+package issues;
+
+import interfaces.ISoftware;
+
+public class UpdateTask extends Task implements ISoftware {
+
     private int updateTime;
     private boolean requiresShutdown;
 
-    public Update(String newVersion, int newUpdateTime, boolean newRequiresShutdown) {
+    public UpdateTask(Version newVersion, int newUpdateTime, boolean newRequiresShutdown) {
         version = newVersion;
         updateTime = newUpdateTime;
         requiresShutdown = newRequiresShutdown;
     }
 
     public void updateMachine() {
-        version = "newestVersion";
+        fixIssues();
         updateTime = 0;
         solved = true;
     }
 
     public void updateRestart() {
-        version = "newestVersion";
+        fixIssues();
         updateTime = 0;
         solved = true;
-    }
-    public String toString(){
-        return "update, status: "+solved;
     }
 
     public int getUpdateTime() {
@@ -41,12 +43,22 @@ public class Update extends Task{
     }
 
     @Override
-    void solve() {
-        if(requiresShutdown){
+    public boolean solve() {
+        if (requiresShutdown) {
             updateRestart();
-        }
-        else{
+        } else {
             updateMachine();
         }
+        return solved;
+    }
+
+    @Override
+    public void fixIssues() {
+        version = Version.NEWEST;
+    }
+
+    @Override
+    public String toString() {
+        return "update, status: " + solved;
     }
 }
